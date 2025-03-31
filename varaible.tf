@@ -45,6 +45,11 @@ variable "username" {
 }
 
 
+variable "nic_name" {
+  type    = list(string)
+  default = ["MPEDA-windows-nic1", "MPEDA-linux-nic1", "MPEDA-linux-nic2", "MPEDA-linux-nic3", "MPEDA-linux-nic4"]
+}
+
 variable "windows-vm-name" {
     type = string
     default = "Server2-webapp"
@@ -59,9 +64,13 @@ variable "windowsVmsize" {
 variable "Windows_os_disk_sizes" {
   description = "List of OS disk sizes for each VM"
   type        = list(number)
-  default     = [128,] # Different disk sizes for each VM
+  default     = [128,] 
 }
 
+variable "linux_Vm_name" {
+  type = list(string)
+  default = ["linux-vm1st", "linux-vm2nd", "linux-vm3rd", "linux-vm4th"] 
+}
 
 variable "linuxVmsize" {
   description = "List of VM sizes for the linux virtual machines"
@@ -71,5 +80,5 @@ variable "linuxVmsize" {
 variable "linuxVm_os_disk_sizes" {
   description = "List of OS disk sizes for each VM"
   type        = list(number)
-  default     = [30, 30, 30, 64] # Different disk sizes for each VM
+  default     = [30, 30, 30, 30] # Different disk sizes for each VM
 }

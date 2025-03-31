@@ -18,9 +18,6 @@ resource "azurerm_subnet" "subnet1" {
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = [var.subnet1_address_prefix]
 
-    lifecycle {
-    ignore_changes = [address_prefixes] # Prevents Terraform from modifying subnet1's address prefix
-  }
 }
 
 # Subnet2
@@ -29,6 +26,7 @@ resource "azurerm_subnet" "subnet2" {
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = [var.subnet2_address_prefix]
+  depends_on = [ azurerm_subnet.subnet1]             # Ensure subnet1 exists first
 }
 
 # Generate Random Passwords
@@ -41,7 +39,7 @@ resource "random_password" "passwords" {
 # nic
 resource "azurerm_network_interface" "nic" {
   count               = 5
-  name                = "nic-${count.index}"
+  name                = var.nic_name[count.index]
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   depends_on = [azurerm_subnet.subnet1, azurerm_subnet.subnet2]  # Ensure subnets exist first
@@ -80,7 +78,7 @@ resource "azurerm_windows_virtual_machine" "winvm" {
 
 resource "azurerm_linux_virtual_machine" "linuxvm" {
   count               = 4
-  name                = "linuxvm-${count.index}"
+  name                = element(var.linux_Vm_name, count.index)                                    #  "linuxvm-${count.index}"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   size                = element(var.linuxVmsize, count.index)
