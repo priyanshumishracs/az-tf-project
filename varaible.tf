@@ -82,3 +82,16 @@ variable "linuxVm_os_disk_sizes" {
   type        = list(number)
   default     = [30, 30, 30, 30] # Different disk sizes for each VM
 }
+
+variable "subscription_id" {    
+  type    = string
+}
+variable "tenant_id" {    
+  type    = string
+}
+variable "client_id" {    
+  type    = string
+}
+variable "client_secret" {    
+  type    = string
+}
