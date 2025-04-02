@@ -9,35 +9,60 @@ variable "location" {
   default = "Central India"
 }
 
-variable "vnet_name" {
+variable "vnet1_name" {
   type    = string
-  default = "MPEDA-Vnet"
+  default = "MPEDA-hub-Vnet"
+}
+variable "vnet1_address_space" {
+  type    =  list(string)
+  default = ["10.1.0.0/16"]
 }
 
-variable "vnet_address_space" {
+variable "Vnet1_subnet1_name" {
+  type    = string
+  default = "MPEDA-hub-subnet-1"
+}
+variable "Vnet1_subnet1_address_prefix" {
+  type    = string
+  default = "10.1.0.0/24"
+}
+
+variable "puplic_ip_name" {
+  type    = string
+  default = "MPEDA-prod-pub-ip1"
+}
+variable "LoadBalancer_name" {
+  type    = string
+  default = "MPEDA-prod-lb"
+}
+
+
+
+variable "vnet2_name" {
+  type    = string
+  default = "MPEDA-prod-spoke-Vnet"
+}
+variable "vnet2_address_space" {
   type    =  list(string)
   default = ["10.0.0.0/16"]
 }
-
-variable "subnet1_name" {
+variable "Vnet2_subnet1_name" {
   type    = string
-  default = "MPEDA-subnet-1"
+  default = "MPEDA-prod-subnet1"
 }
-
-variable "subnet1_address_prefix" {
+variable "Vnet2_subnet1_address_prefix" {
   type    = string
   default = "10.0.1.0/24"
 }
-
-variable "subnet2_name" {
+variable "Vnet2_subnet2_name" {
   type    = string
-  default = "MPEDA-subnet-2"
+  default = "MPEDA-prod-subnet2"
 }
-
-variable "subnet2_address_prefix" {
+variable "Vnet2_subnet2_address_prefix" {
   type    = string
   default = "10.0.2.0/24"
 }
+
 
 variable "username" {
     type = string
@@ -47,19 +72,23 @@ variable "username" {
 
 variable "nic_name" {
   type    = list(string)
-  default = ["MPEDA-windows-nic1", "MPEDA-linux-nic1", "MPEDA-linux-nic2", "MPEDA-linux-nic3", "MPEDA-linux-nic4"]
+  default = ["MPEDA-WebApp-nic1", "MPEDA-GeoServer-nic", "MPEDA-redisServer-nic", "MPEDA-dbServer-nic"]
 }
+
 
 variable "windows-vm-name" {
     type = string
-    default = "Server2-webapp"
+    default = "MPEDA-WebApp-server"
 }
-
-
 variable "windowsVmsize" {
   description = "List of VM sizes for the virtual machines"
   type        = list(string)
-  default     = ["Standard_B1s"] 
+  default     = ["Standard_D4aS_v5"] 
+}
+variable "windows-vm-os-disk-name" {
+  description = "List of OS disk names for each VM"
+  type        = string
+  default     = "MPEDA-WebApp-server-osdisk"
 }
 variable "Windows_os_disk_sizes" {
   description = "List of OS disk sizes for each VM"
@@ -67,21 +96,27 @@ variable "Windows_os_disk_sizes" {
   default     = [128,] 
 }
 
+
 variable "linux_Vm_name" {
   type = list(string)
-  default = ["linux-vm1st", "linux-vm2nd", "linux-vm3rd", "linux-vm4th"] 
+  default = ["MPEDA-prod-Geo-server", "MPEDA-prod-redis-server", "MPEDA-db-server"] 
 }
-
 variable "linuxVmsize" {
   description = "List of VM sizes for the linux virtual machines"
   type        = list(string)
-  default     = ["Standard_B1s", "Standard_B1s", "Standard_B1s", "Standard_B2s"] # Example sizes
+  default     = ["Standard_D16aS_v5", "Standard_D4aS_v5", "Standard_D8aS_v5"] # Example sizes
+}
+variable "linux_Vm_os_disk_name" {
+  description = "List of OS disk names for each VM"
+  type        = list(string)
+  default     = ["MPEDA-prod-Geo-server-osdisk", "MPEDA-prod-redis-server-osdisk", "MPEDA-db-server-osdisk"] # Example names
 }
 variable "linuxVm_os_disk_sizes" {
   description = "List of OS disk sizes for each VM"
   type        = list(number)
-  default     = [30, 30, 30, 30] # Different disk sizes for each VM
+  default     = [28, 28, 28, 28] # Different disk sizes for each VM
 }
+
 
 variable "subscription_id" {    
   type    = string
