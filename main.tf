@@ -39,11 +39,12 @@ resource "azurerm_lb" "example" {
     public_ip_address_id = azurerm_public_ip.Pub-ip.id
   }
 
-  frontend_ip_configuration {
-    name      = "InternalFrontend"
-    subnet_id = azurerm_subnet.Hub_subnet1.id  # ✅ Internal Subnet inside VNet
-    private_ip_address_allocation = "static"
-  }
+ #  frontend_ip_configuration {
+  #  name      = "InternalFrontend"
+#   subnet_id = azurerm_subnet.Hub_subnet1.id  
+ #   private_ip_address_allocation = "Static"
+ #   private_ip_address            = var.lb_private_ip  # ✅ Internal Subnet inside VNet
+ # }
   depends_on = [azurerm_public_ip.Pub-ip, azurerm_subnet.Hub_subnet1]  # Ensure Public IP is created first]
 }
 
@@ -106,7 +107,7 @@ resource "azurerm_windows_virtual_machine" "winvm" {
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   size                = element(var.windowsVmsize, count.index)
-  admin_username      = var.username
+  admin_username      = var.windows_username
   admin_password      = random_password.passwords[0].result
   network_interface_ids = [azurerm_network_interface.nic[0].id]
   
@@ -134,7 +135,7 @@ resource "azurerm_linux_virtual_machine" "linuxvm" {
   location            = azurerm_resource_group.rg.location
   size                = element(var.linuxVmsize, count.index)
 
-  admin_username      = var.username
+  admin_username      = var.linux_username[count.index] # Using the list of usernames for each VM
   disable_password_authentication = false
  admin_password      = random_password.passwords[count.index + 1].result
   
@@ -158,8 +159,8 @@ resource "azurerm_linux_virtual_machine" "linuxvm" {
 # Save VM Credentials Locally (Without Public IP)
 resource "local_file" "vm_credentials" {
   content  = join("\n", concat(
-    [ "Windows VM  | User: adminuser | Password: ${random_password.passwords[0].result} | Private IP: ${azurerm_network_interface.nic[0].private_ip_address}" ],
-    [ for i in range(3) : "linuxvm-${i+1} | User: adminuser | Password: ${random_password.passwords[i+1].result} | Private IP: ${azurerm_network_interface.nic[i+1].private_ip_address}" ]
+    [ "winvm  | User: ${var.windows_username} | Password: ${random_password.passwords[0].result} | Private IP: ${azurerm_network_interface.nic[0].private_ip_address}" ],
+    [ for i in range(3) : "linuxvm-${i+1} | User: ${var.linux_username[i]} | Password: ${random_password.passwords[i+1].result} | Private IP: ${azurerm_network_interface.nic[i+1].private_ip_address}" ]
   ))
   filename = "${path.module}/vm_credentials.txt"
 }
